@@ -53,7 +53,7 @@ namespace Behsa.Parliament.Test
             };
 
             var jsonString = JsonConvert.SerializeObject(contacvm);
-            var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json"); 
 
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsync($"{EndPoints.BaseUrl}/{EndPoints.Contacts}", httpContent);
 
