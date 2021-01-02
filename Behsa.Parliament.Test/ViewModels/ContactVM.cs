@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Behsa.Parliament.Test.ViewModels
 {
-    public class ContactVM
+    public class ContactVm
     {
         public Guid ContactId { get; set; }
         public Guid? AccountId { get; set; }
@@ -17,7 +17,7 @@ namespace Behsa.Parliament.Test.ViewModels
         public string NationalId { get; set; }
         public string FathersName { get; set; }
         public string Address { get; set; }
-        public DateTime Birthday { get; set; }
+        //public DateTime Birthday { get; set; }
         public Guid StateId { get; set; }
         public string StateName { get; set; }
         public string CityName { get; set; }
