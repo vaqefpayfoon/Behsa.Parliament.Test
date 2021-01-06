@@ -18,8 +18,12 @@ namespace Behsa.Parliament.Test.ViewModels
         public string FathersName { get; set; }
         public string Address { get; set; }
         //public DateTime Birthday { get; set; }
-        public Guid StateId { get; set; }
+        public Guid? StateId { get; set; }
         public string StateName { get; set; }
         public string CityName { get; set; }
+        public string bhs_LTN_Complaint { get; set; }
+        public string bhs_LTN_Elite { get; set; }
+        public string bhs_LTN_Incident_S { get; set; }
+        public string bhs_LTN_Incident_L { get; set; }
     }
 }

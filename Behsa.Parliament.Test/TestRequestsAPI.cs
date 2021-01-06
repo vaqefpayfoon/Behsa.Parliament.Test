@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace Behsa.Parliament.Test
@@ -13,20 +14,34 @@ namespace Behsa.Parliament.Test
     public class TestRequestsAPI
     {
         [Fact]
-        public async void GetRequests_Expected()
+        public async void GetRequests_ExpectedPersianCharacterStateCode()
         {
-            //ارتباط با نماینده / رییس مجلس    112
-            //ثبت شکایات  10025
-            //فرم نخبگانی 10022
             var httpClient = new HttpClient();
-            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}/{EndPoints.RequestSubGroups}");
+            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}{EndPoints.Requests}/byCustomer/{TestData4.ContactId}");
             var strJson = await json.Content.ReadAsStringAsync();
-            RequestSubGroupListVm requestSubGroupList = JsonConvert.DeserializeObject<RequestSubGroupListVm>(strJson);
+            RequestListVm requestListVm = JsonConvert.DeserializeObject<RequestListVm>(strJson);
 
+            var stateCode = requestListVm.AllRequests.FirstOrDefault().StateCode;
 
-            Assert.NotNull(requestSubGroupList);
+            Regex regex = new Regex("[\u0600-\u06ff]|[\u0750-\u077f]|[\ufb50-\ufc3f]|[\ufe70-\ufefc]");
+            bool res = regex.IsMatch(stateCode);
+            Assert.Equal(res, true);
 
-            Assert.True(requestSubGroupList.RequestSubGroups.Count > 5);
+        }
+        [Fact]
+        public async void GetRequests_ExpectedPersianCharacterApplicationType()
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}{EndPoints.Requests}/byCustomer/{TestData4.ContactId}");
+            var strJson = await json.Content.ReadAsStringAsync();
+            RequestListVm requestListVm = JsonConvert.DeserializeObject<RequestListVm>(strJson);
+
+            var stateCode = requestListVm.AllRequests.FirstOrDefault().ApplicationType;
+
+            Regex regex = new Regex("[\u0600-\u06ff]|[\u0750-\u077f]|[\ufb50-\ufc3f]|[\ufe70-\ufefc]");
+            bool res = regex.IsMatch(stateCode);
+            Assert.Equal(res, true);
+
         }
     }
 }

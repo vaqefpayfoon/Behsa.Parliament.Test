@@ -16,7 +16,7 @@ namespace Behsa.Parliament.Test
         public async void GetRequestSubGroups_ExpectedMoreThan5()
         {
             var httpClient = new HttpClient();
-            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}/{EndPoints.RequestSubGroups}");
+            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}{EndPoints.RequestSubGroups}");
             var strJson = await json.Content.ReadAsStringAsync();
             RequestSubGroupListVm requestSubGroupList = JsonConvert.DeserializeObject<RequestSubGroupListVm>(strJson);
 

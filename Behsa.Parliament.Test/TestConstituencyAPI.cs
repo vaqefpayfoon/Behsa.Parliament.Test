@@ -1,11 +1,7 @@
 ﻿using Behsa.Parliament.Test.Utilities;
 using Behsa.Parliament.Test.ViewModels;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using Xunit;
 
 namespace Behsa.Parliament.Test
@@ -16,7 +12,7 @@ namespace Behsa.Parliament.Test
         public async void GetConstituencies_ExpectedMoreThan190()
         {
             var httpClient = new HttpClient();
-            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}/{EndPoints.Constituencies}");
+            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}{EndPoints.Constituencies}");
             var strJson = await json.Content.ReadAsStringAsync();
             ConstituencyListVm Constituencies = JsonConvert.DeserializeObject<ConstituencyListVm>(strJson);
 
@@ -25,5 +21,17 @@ namespace Behsa.Parliament.Test
 
             Assert.True(Constituencies.Constituencies.Count > 190);
         }
+        [Fact]
+        public async void GetConstituencies_WithStateID()
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}{EndPoints.Constituencies}/bystate/{TestData4.StateId}");
+            var strJson = await json.Content.ReadAsStringAsync();
+            ConstituencyListVm Constituencies = JsonConvert.DeserializeObject<ConstituencyListVm>(strJson);
+
+
+            Assert.NotNull(Constituencies);
+        }
+
     }
 }

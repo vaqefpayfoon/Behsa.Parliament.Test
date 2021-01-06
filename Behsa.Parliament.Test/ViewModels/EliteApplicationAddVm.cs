@@ -8,9 +8,9 @@ namespace Behsa.Parliament.Test.ViewModels
     public class EliteApplicationAddVm
     {
         [Required]
-        public Guid ContactId { get; set; }
+        public Guid? ContactId { get; set; }
         [Required]
-        public Guid ExpertiseAreaId { get; set; }
+        public Guid? ExpertiseAreaId { get; set; }
         [Required]
         public string Description { get; set; }
         [Required]

@@ -12,19 +12,19 @@ namespace Behsa.Parliament.Test
     public class TestRequestGroupAPI
     {
         [Fact]
-        public async void GetRequestGroup_ExpectedMoreThan32()
+        public async void GetRequestGroup_ExpectedMoreThan3()
         {
-            //var json = new WebClient().DownloadString($"{EndPoints.BaseUrl}/{EndPoints.Contacts}/{TestData4Contact.Id}");
+            //var json = new WebClient().DownloadString($"{EndPoints.BaseUrl}{EndPoints.Contacts}/{TestData4Contact.Id}");
 
             var httpClient = new HttpClient();
-            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}/{EndPoints.RequestGroups}");
+            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}{EndPoints.RequestGroups}");
             var strJson = await json.Content.ReadAsStringAsync();
             RequestGroupListVm RequestGroups = JsonConvert.DeserializeObject<RequestGroupListVm>(strJson);
 
 
             Assert.NotNull(RequestGroups);
 
-            Assert.True(RequestGroups.RequestGroups.Count > 5);
+            Assert.True(RequestGroups.RequestGroups.Count > 3);
         }
     }
 }

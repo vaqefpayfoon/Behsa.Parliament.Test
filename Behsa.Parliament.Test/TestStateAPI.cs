@@ -10,21 +10,21 @@ using Xunit;
 
 namespace Behsa.Parliament.Test
 {
-    //[TestCaseOrderer("FullNameOfOrderStrategyHere", "OrderStrategyAssemblyName")]
-    //public class TestStateAPI
-    //{
-        
-    //    public async void GetStates_ExpectedMoreThan5()
-    //    {
-    //        var httpClient = new HttpClient();
-    //        var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}/{EndPoints.States}");
-    //        var strJson = await json.Content.ReadAsStringAsync();
-    //        StateListVm states = JsonConvert.DeserializeObject<StateListVm>(strJson);
-            
+    
+    public class TestStateAPI
+    {
+        [Fact]
+        public async void GetStates_ExpectedEqual32()
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}{EndPoints.States}");
+            var strJson = await json.Content.ReadAsStringAsync();
+            StateListVm states = JsonConvert.DeserializeObject<StateListVm>(strJson);
 
-    //        Assert.NotNull(states);            
 
-    //        Assert.True(states.StatesVm.Count > 5);
-    //    }
-    //}
+            Assert.NotNull(states);
+
+            Assert.True(states.StatesVm.Count == 32);
+        }
+    }
 }

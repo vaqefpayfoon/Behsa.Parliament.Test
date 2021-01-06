@@ -2,7 +2,6 @@
 using Behsa.Parliament.Test.ViewModels;
 using Newtonsoft.Json;
 using System;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -16,6 +15,155 @@ namespace Behsa.Parliament.Test
 {
     public class TestIncidentAPI
     {
+        [Fact]
+        public async void AddIncidentNullAccountContactExpectedBadRequest()
+        {
+            var httpClient = new HttpClient();
+            IncidentAddVm incidentAddVm = GetIncident("AccountContact");
+
+            var accountId = incidentAddVm.AccountId;
+            var contactId = incidentAddVm.ContactId;
+
+            Assert.Null(accountId);
+            Assert.Null(contactId);
+
+            await Assert.ThrowsAsync<HttpRequestException>(async () => {
+                var jsonString = JsonConvert.SerializeObject(incidentAddVm);
+                var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage httpResponseMessage = await httpClient.PostAsync($"{EndPoints.BaseUrl}{EndPoints.Incidents}", httpContent);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
+                    throw new HttpRequestException();
+            });
+
+        }
+        [Fact]
+        public async void AddIncidentNullUserExpectedBadRequest()
+        {
+            var httpClient = new HttpClient();
+            IncidentAddVm incidentAddVm = GetIncident("User");
+
+            var userId = incidentAddVm.UserId;
+
+            Assert.Null(userId);
+
+            await Assert.ThrowsAsync<HttpRequestException>(async () => {
+                var jsonString = JsonConvert.SerializeObject(incidentAddVm);
+                var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage httpResponseMessage = await httpClient.PostAsync($"{EndPoints.BaseUrl}/{EndPoints.Incidents}", httpContent);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
+                    throw new HttpRequestException();
+            });
+
+        }
+        [Fact]
+        public async void AddIncidentNullRequestGroupExpectedBadRequest()
+        {
+            var httpClient = new HttpClient();
+            IncidentAddVm incidentAddVm = GetIncident("RequestGroup");
+
+            var RequestGroupId = incidentAddVm.RequestGroupId;
+
+            Assert.Null(RequestGroupId);
+
+            await Assert.ThrowsAsync<HttpRequestException>(async () => {
+                var jsonString = JsonConvert.SerializeObject(incidentAddVm);
+                var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage httpResponseMessage = await httpClient.PostAsync($"{EndPoints.BaseUrl}/{EndPoints.Incidents}", httpContent);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
+                    throw new HttpRequestException();
+            });
+
+        }
+        [Fact]
+        public async void AddIncidentNullRequestSubGroupExpectedBadRequest()
+        {
+            var httpClient = new HttpClient();
+            IncidentAddVm incidentAddVm = GetIncident("RequestSubGroup");
+
+            var RequestSubGroupId = incidentAddVm.RequestSubGroupId;
+
+            Assert.Null(RequestSubGroupId);
+
+            await Assert.ThrowsAsync<HttpRequestException>(async () => {
+                var jsonString = JsonConvert.SerializeObject(incidentAddVm);
+                var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage httpResponseMessage = await httpClient.PostAsync($"{EndPoints.BaseUrl}/{EndPoints.Incidents}", httpContent);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
+                    throw new HttpRequestException();
+            });
+
+        }
+        [Fact]
+        public async void AddIncidentNullRequestTypeExpectedBadRequest()
+        {
+            var httpClient = new HttpClient();
+            IncidentAddVm incidentAddVm = GetIncident("RequestType");
+
+            var RequestType = incidentAddVm.RequestType;
+
+            Assert.Null(RequestType);
+
+            await Assert.ThrowsAsync<HttpRequestException>(async () => {
+                var jsonString = JsonConvert.SerializeObject(incidentAddVm);
+                var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage httpResponseMessage = await httpClient.PostAsync($"{EndPoints.BaseUrl}/{EndPoints.Incidents}", httpContent);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
+                    throw new HttpRequestException();
+            });
+
+        }
+        [Fact]
+        public async void AddIncidentAgentRequestTypeAndNullUserExpectedBadRequest()
+        {
+            var httpClient = new HttpClient();
+            IncidentAddVm incidentAddVm = GetIncident("User");
+
+            incidentAddVm.RequestType = 2;
+
+            await Assert.ThrowsAsync<HttpRequestException>(async () => {
+                var jsonString = JsonConvert.SerializeObject(incidentAddVm);
+                var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage httpResponseMessage = await httpClient.PostAsync($"{EndPoints.BaseUrl}/{EndPoints.Incidents}", httpContent);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
+                    throw new HttpRequestException();
+            });
+
+        }
+        [Fact]
+        public async void AddIncidentNegativeRequestTypeExpectedBadRequest()
+        {
+            var httpClient = new HttpClient();
+            IncidentAddVm incidentAddVm = GetIncident("FullData");
+            incidentAddVm.RequestType = -1;
+            await Assert.ThrowsAsync<HttpRequestException>(async () => {
+                var jsonString = JsonConvert.SerializeObject(incidentAddVm);
+                var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage httpResponseMessage = await httpClient.PostAsync($"{EndPoints.BaseUrl}/{EndPoints.Incidents}", httpContent);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
+                    throw new HttpRequestException();
+            });
+
+        }
+        [Fact]
+        public async void AddIncident()
+        {
+            var httpClient = new HttpClient();
+            IncidentAddVm incidentAddVm = GetIncident("FullData");
+            var jsonString = JsonConvert.SerializeObject(incidentAddVm);
+            var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync($"{EndPoints.BaseUrl}/{EndPoints.Incidents}", httpContent);
+            Assert.Equal(HttpStatusCode.OK, httpResponseMessage.StatusCode);
+
+        }
         [Fact]
         public async void GetIncidentByContact_ExpectedFound()
         {
@@ -51,7 +199,7 @@ namespace Behsa.Parliament.Test
         {
 
             var httpClient = new HttpClient();
-            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}/{EndPoints.Incidents}/byaccount/{TestData4.IncidentId}");
+            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}/{EndPoints.Incidents}/byaccount/{TestData4.AccountId}");
             var strJson = await json.Content.ReadAsStringAsync();
             IncidentAddVm incidentAddVm = JsonConvert.DeserializeObject<IncidentAddVm>(strJson);
 
@@ -62,120 +210,86 @@ namespace Behsa.Parliament.Test
 
         }
         [Fact]
-        public async void UploadFileTest_ExpectedResultCreated()
+        public async void GetIncidentById_ExpectedStatusCode200()
         {
 
-            string workingDirectory = Environment.CurrentDirectory;
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}/{EndPoints.Incidents}/{TestData4.IncidentId}");
+            var strJson = await json.Content.ReadAsStringAsync();
+            if (json.StatusCode == HttpStatusCode.OK)
+                Assert.True(true);
+            else
+                Assert.True(false);
 
-            string file = Path.Combine(projectDirectory, "Files\\Logical.pdf");
-            FileStream fs;
-            MemoryStream ms;
-            byte[] data;
-            using (fs = File.OpenRead(file))
-            {
-                int length = Convert.ToInt32(fs.Length);
-                data = new byte[length];
-                fs.Read(data, 0, length);
-                fs.Close();
-                ms = new MemoryStream(data);
-            }
-            HttpContent fileStreamContent = new StreamContent(ms);
-            fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            using (var client = new HttpClient())
-            using (var formData = new MultipartFormDataContent())
-            {
-                formData.Add(fileStreamContent, "file", "Logical.pdf");
-                var response = await client.PostAsync($"{EndPoints.BaseUrl}{EndPoints.Documents}/incident/byentity/{TestData4.IncidentId}", formData);
-                HttpStatusCode httpStatusCode = response.StatusCode;
-
-                Assert.Equal(HttpStatusCode.Created, httpStatusCode);
-            }
-
-        }
-
-        [Fact]
-        public async void UploadFileTest_ExpectedResultRequestEntityTooLarge()
-        {
-
-            string workingDirectory = Environment.CurrentDirectory;
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-
-            string file = Path.Combine(projectDirectory, "Files\\ASPANgular.pdf");
-            FileStream fs;
-            MemoryStream ms;
-            byte[] data;
-            using (fs = File.OpenRead(file))
-            {
-                int length = Convert.ToInt32(fs.Length);
-                data = new byte[length];
-                fs.Read(data, 0, length);
-                fs.Close();
-                ms = new MemoryStream(data);
-            }
-            HttpContent fileStreamContent = new StreamContent(ms);
-            fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            using (var client = new HttpClient())
-            using (var formData = new MultipartFormDataContent())
-            {
-                formData.Add(fileStreamContent, "file", "ASPANgular.pdf");
-                var response = await client.PostAsync($"{EndPoints.BaseUrl}/{EndPoints.Documents}/byincident/{TestData4.IncidentId}", formData);
-                HttpStatusCode httpStatusCode = response.StatusCode;
-
-                Assert.Equal(HttpStatusCode.RequestEntityTooLarge, httpStatusCode);
-            }
 
         }
         [Fact]
-        public async void UploadFileTest_ExpectedResultBadRequest()
+        public async void GetIncidentById_ExpectedNotFound()
         {
+            var httpClient = new HttpClient();
 
-            string workingDirectory = Environment.CurrentDirectory;
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-
-            string file = Path.Combine(projectDirectory, "Files\\test.exe");
-            FileStream fs;
-            MemoryStream ms;
-            byte[] data;
-            using (fs = File.OpenRead(file))
-            {
-                int length = Convert.ToInt32(fs.Length);
-                data = new byte[length];
-                fs.Read(data, 0, length);
-                fs.Close();
-                ms = new MemoryStream(data);
-            }
-            HttpContent fileStreamContent = new StreamContent(ms);
-            fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            using (var client = new HttpClient())
-            using (var formData = new MultipartFormDataContent())
-            {
-                formData.Add(fileStreamContent, "file", "test.exe");
-                var response = await client.PostAsync($"{EndPoints.BaseUrl}/{EndPoints.Documents}/byincident/{TestData4.IncidentId}", formData);
-                HttpStatusCode httpStatusCode = response.StatusCode;
-
-                Assert.Equal(HttpStatusCode.BadRequest, httpStatusCode);
-            }
-
+            await Assert.ThrowsAsync<HttpRequestException>(async () => {
+                HttpResponseMessage httpResponseMessage = await httpClient.GetAsync($"{EndPoints.BaseUrl}{EndPoints.Incidents}/{TestData4.AccountId}");
+                if (httpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+                    throw new HttpRequestException();
+            });
         }
         [Fact]
-        public void AddIncidentExpectedGuidWithUpload()
+        public async void CheckIncidentTicketNumber_ExpectedFound()
         {
+            string ticketNumber;
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetAsync($"{EndPoints.BaseUrl}{EndPoints.Contacts}/{TestData4.ContactIdIncident}");
+            var strJson = await json.Content.ReadAsStringAsync();
+            ContactVm contacvm = JsonConvert.DeserializeObject<ContactVm>(strJson);
 
+            Assert.IsType<ContactVm>(contacvm);
+
+            var httpClient2 = new HttpClient();
+            var json2 = await httpClient2.GetAsync($"{EndPoints.BaseUrl}/{EndPoints.Incidents}/{TestData4.Incident4TicketNumber}");
+            var strJson2 = await json2.Content.ReadAsStringAsync();
+            IncidentVm incidentAddVm = JsonConvert.DeserializeObject<IncidentVm>(strJson2);
+
+            Assert.IsType<IncidentVm>(incidentAddVm);
+
+            Assert.NotNull(incidentAddVm);
+            bool result = incidentAddVm.TicketNumber.StartsWith(contacvm.NationalId);
+            Assert.True(result);
+
+            //ticketNumber = contacvm.NationalId;
+
+            //if (incidentAddVm.RequestType == 10)
+            //{
+            //    ticketNumber += "-10-";
+            //    ticketNumber += contacvm.bhs_LTN_Incident_S;
+            //}
+            //else
+            //{
+            //    ticketNumber += "-20-";
+            //    ticketNumber += contacvm.bhs_LTN_Incident_L;
+            //}
+            //Assert.Equal(incidentAddVm.TicketNumber, ticketNumber);
         }
         public IncidentAddVm GetIncident(string state)
         {
             IncidentAddVm incident = new IncidentAddVm();
             
-            incident.AccountId = state == "Account" ? (Guid?) Guid.Parse("8D230B9B-9B37-EB11-B34A-0050569C6D6D") : null;
-            incident.ContactId = state == "Contact" ? (Guid?)Guid.Parse("8D230B9B-9B37-EB11-B34A-0050569C6D6D") : null;
-            incident.RequestType = 2;    //1:  رییس مجلس  
+            incident.AccountId = state == "AccountContact" ? null : (Guid?) Guid.Parse(TestData4.AccountId);
+            incident.ContactId = state == "AccountContact" ? null : (Guid?) Guid.Parse(TestData4.ContactId);
 
-            incident.UserId = Guid.Parse("56950A2C-0C30-EB11-A772-005056B4EFA1");
+            if (state == "ParliamentBoss")
+                incident.RequestType = 1; // رییس مجلس
+            else if (state == "Agent")
+                incident.RequestType = 2;// نماینده مجلس
+            else if (state == "RequestType")
+                incident.RequestType = null;
+            else
+                incident.RequestType = 1;
+            incident.UserId = state == "User" ? null : (Guid?) Guid.Parse(TestData4.UserId);
             incident.Description = FakeData.RandomString(10);
             incident.IncidentTitle = FakeData.RandomString(10);
-            incident.RequestGroupId = Guid.Parse("77c45ffa-152f-eb11-a772-005056b4efa1");
-            incident.RequestSubGroupId =  Guid.Parse("46cb66a6-7e34-eb11-b34a-0050569c6d6d");
+            incident.RequestGroupId = state == "RequestGroup" ? null : (Guid?) Guid.Parse(TestData4.RequestGroupId);
+            incident.RequestSubGroupId = state == "RequestSubGroup" ? null : (Guid?) Guid.Parse(TestData4.RequestSubGroupId);
             return incident;
         }
     }
